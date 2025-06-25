@@ -1,0 +1,23 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PanelComponent
+@namespace Sandbox
+
+<root>
+	<div class="accent-bar"></div>
+	<div class="interact-content">
+		<i class="mouse-icon">🖱️</i>
+		<span class="interact-text">@InteractText</span>
+	</div>
+</root>
+
+@code
+{
+
+	[Property, TextArea] public string InteractText { get; set; } = "Hello World!";
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine( InteractText );
+} 

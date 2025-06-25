@@ -1,0 +1,134 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System.Threading.Tasks;
+@inherits PanelComponent
+@namespace Sandbox
+
+<root>
+	<div class="bottom-hud">
+		<div class="accent-bar"></div>
+		<div class="hud-item">
+			<i class="material-icons">favorite</i>
+			<span class="hud-value">@Health</span>
+		</div>
+		
+		<div class="hud-item">
+			<i class="material-icons">shield</i>
+			<span class="hud-value">Sans-faction</span>
+		</div>
+		
+		<div class="hud-item">
+			<i class="material-icons">attach_money</i>
+			<span class="hud-value">@GetMoney().ToString("N0")</span>
+		</div>
+		
+		<div class="hud-item">
+			<i class="material-icons">star</i>
+			<span class="hud-value">@Coins</span>
+		</div>
+		
+		<div class="hud-item">
+			<i class="material-icons">psychology</i>
+			<span class="hud-value">@GetXP() / @GetMaxXP() XP</span>
+		</div>
+		
+		<div class="hud-item">
+			<i class="material-icons">military_tech</i>
+			<span class="hud-value">@GetLevel() / @GetMaxLevel()</span>
+		</div>
+		
+		@if (GetRebirth() > 0)
+		{
+			<div class="hud-item">
+				<i class="material-icons">autorenew</i>
+				<span class="hud-value">Rebirth @GetRebirth()</span>
+			</div>
+		}
+	</div>
+</root>
+
+@code
+{
+	[Property] private int Health { get; set; } = 100;
+	[Property] private int Coins { get; set; } = 850;
+
+	private DataManager dataManager;
+	private int delay = 1; // delay in seconds
+
+	private int GetMoney() => dataManager?.CurrentPlayerData?.Money ?? 0;
+	private int GetLevel() => dataManager?.CurrentPlayerData?.Level ?? 1;
+	private int GetMaxLevel() => PlayerLevelSystem.MAX_LEVEL;
+	private int GetXP() => dataManager?.CurrentPlayerData?.ExperiencePoints ?? 0;
+	private int GetMaxXP() => PlayerLevelSystem.GetXPNextLevel(GetLevel());
+	private int GetRebirth() => dataManager?.CurrentPlayerData?.Rebirth ?? 0;
+	
+	// Additional BaseWars system helpers
+	private float GetLevelProgress() => PlayerLevelSystem.GetLevelProgress(GetLevel(), GetXP());
+	private int GetLevelsUntilMax() => PlayerLevelSystem.GetLevelsUntilMax(GetLevel());
+	private int GetTotalXPEarned() => PlayerLevelSystem.GetTotalXPEarned(GetLevel(), GetXP());
+	private bool HasLevel(int level) => PlayerLevelSystem.HasLevel(GetLevel(), level);
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine(
+		Health,
+		GetLevel(),
+		GetMaxLevel(),
+		GetXP(),
+		GetMaxXP(),
+		Coins,
+		GetMoney(),
+		GetRebirth()
+	);
+
+	protected override void OnStart()
+	{
+		// Get DataManager reference once at start
+		var composants = Scene.GetAllComponents<DataManager>();
+		dataManager = composants.FirstOrDefault();
+		
+		if (dataManager == null)
+		{
+			Log.Warning("DataManager not found in scene!");
+		}
+		
+		_ = StartTimer();
+	}
+
+	private async Task StartTimer()
+	{
+		while (true)
+		{
+			// Update Health locally (not persisted yet)
+			Health -= 5;
+			if (Health < 0) Health = 100;
+			
+			// Update Coins locally (not persisted yet) 
+			Coins += 5;
+			
+			// Use DataManager methods for persistent data
+			if (dataManager != null)
+			{
+				dataManager.AddMoney(50);
+
+				dataManager.ResetRebirth();
+
+				@* dataManager.AddRebirth(1); *@
+
+				dataManager.AddExperience(100000000);
+				
+				// Display level achievements
+				if (HasLevel(50) && GetLevel() % 50 == 0)
+				{
+					Log.Info($"🏆 Milestone reached! Level {GetLevel()}");
+				}
+				
+				// Save data periodically
+				dataManager.SavePlayerData();
+			}
+
+			await Task.DelaySeconds(delay);
+		}
+	}
+}
