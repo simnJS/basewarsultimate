@@ -1,0 +1,82 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PanelComponent
+@namespace Sandbox
+
+<root>
+	@{
+		Log.Info($"Rendering: IsOpen={IsOpen}, ShowingCreateForm={ShowingCreateForm}");
+		var currentPlayer = Scene.GetAllComponents<PlayerController>().FirstOrDefault()?.GameObject;
+		var isInFaction = currentPlayer != null && factionComponent?.IsPlayerInFaction(currentPlayer) == true;
+	}
+	@if(IsOpen)
+	{
+		<div class="faction-menu">
+			<div class="menu-container">
+				@if(!ShowingCreateForm)
+				{
+					<div class="title">Faction Menu</div>
+					<div class="menu-content">
+						
+						@* Utilisation du nouveau composant FactionsList *@
+						<FactionsList FactionComponent=@factionComponent />
+					</div>
+					
+					<button class="create-faction-btn @(isInFaction ? "disabled" : "")" onclick="@(() => { if (!isInFaction) ShowCreateFactionForm(); })">
+						Create New Faction
+					</button>
+				}
+				else
+				{
+					<div class="title">Create Faction</div>
+					<CreateFactionForm FactionComponent=@factionComponent OnFactionCreated=@HideCreateFactionForm OnCancel=@HideCreateFactionForm />
+				}
+			</div>
+		</div>
+	}
+</root>
+
+@code
+{
+	private bool IsOpen { get; set; }
+	private bool ShowingCreateForm { get; set; }
+	private FactionComponent factionComponent;
+	
+	protected override int BuildHash() => System.HashCode.Combine(
+		IsOpen,
+		ShowingCreateForm
+	);
+
+	protected override void OnStart()
+	{
+		base.OnStart();
+		factionComponent = Scene.GetAllComponents<FactionComponent>().FirstOrDefault();
+	}
+
+	protected override void OnUpdate()
+	{
+		base.OnUpdate();
+
+		if(Input.Pressed("Faction"))
+		{
+			Log.Info($"Faction key pressed! IsOpen was: {IsOpen}");
+			IsOpen = !IsOpen;
+			Log.Info($"IsOpen is now: {IsOpen}");
+			if(!IsOpen)
+			{
+				ShowingCreateForm = false;
+				Log.Info("Reset ShowingCreateForm to false");
+			}
+		}
+	}
+
+	private void ShowCreateFactionForm()
+	{
+		ShowingCreateForm = true;
+	}
+
+	private void HideCreateFactionForm()
+	{
+		ShowingCreateForm = false;
+	}
+}

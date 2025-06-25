@@ -1,0 +1,75 @@
+@using System;
+@using Sandbox.UI;
+@inherits Panel
+@namespace Sandbox
+
+<div class="create-form">
+	<div class="form-group">
+		<label>Faction Name</label>
+		<TextEntry class="input" Text="@factionName" OnTextEdited="@OnFactionNameChanged" placeholder="Enter faction name" maxlength="20" />
+	</div>
+	<div class="form-group">
+		<label>Password (Optional)</label>
+		<TextEntry class="input" Text="@factionPassword" OnTextEdited="@OnFactionPasswordChanged" placeholder="Enter password" maxlength="15" />
+	</div>
+	<div class="form-group color-group">
+		<label>Faction Color</label>
+		<ColorSlider OnColorChanged="@OnFactionColorChanged" />
+	</div>
+	<div class="form-buttons">
+		<button class="cancel-btn" onclick="@OnCancel">
+			Cancel
+		</button>
+		<button class="create-btn" onclick="@CreateFaction">
+			Create
+		</button>
+	</div>
+</div>
+
+@code
+{
+	public FactionComponent FactionComponent { get; set; }
+	public Action OnFactionCreated { get; set; }
+	public Action OnCancel { get; set; }
+
+	private string factionName = "";
+	private string factionPassword = "";
+	private string factionColor = "#4285f4";
+
+	private void OnFactionNameChanged(string newName) => factionName = newName;
+	private void OnFactionPasswordChanged(string newPassword) => factionPassword = newPassword;
+	private void OnFactionColorChanged(string newColor) => factionColor = newColor;
+
+	private void CreateFaction()
+	{
+		if ( string.IsNullOrWhiteSpace( factionName ) )
+		{
+			Log.Info( "Faction name cannot be empty!" );
+			return;
+		}
+
+		var player = Scene.GetAll<PlayerController>().FirstOrDefault( p => !p.IsProxy ).GameObject;
+		if ( player == null )
+		{
+			Log.Info( "Local player not found!" );
+			return;
+		}
+
+		if ( FactionComponent == null )
+		{
+			Log.Info( "FactionComponent not found in form!" );
+			return;
+		}
+
+		var faction = FactionComponent.createFaction( player, factionName, factionPassword, factionColor );
+		if ( faction != null )
+		{
+			Log.Info( $"Faction '{factionName}' created successfully!" );
+			OnFactionCreated?.Invoke();
+		}
+		else
+		{
+			Log.Info( $"Failed to create faction '{factionName}' - name may already exist!" );
+		}
+	}
+} 

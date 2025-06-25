@@ -340,6 +340,17 @@
             }
           ],
           "StartServer": true
+        },
+        {
+          "__type": "FactionComponent",
+          "__guid": "f07c68fa-1ac4-4344-934a-ac082707e7c1",
+          "__enabled": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
         }
       ],
       "Children": []
@@ -388,6 +399,17 @@
           "ScaleStrategy": "ConsistentHeight",
           "TargetCamera": null,
           "ZIndex": 100
+        },
+        {
+          "__type": "Sandbox.FactionMenu",
+          "__guid": "1e943c3d-8e4e-4454-88ff-52aa666547a7",
+          "__enabled": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
         }
       ],
       "Children": []

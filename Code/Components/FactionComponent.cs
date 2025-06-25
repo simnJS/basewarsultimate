@@ -113,19 +113,24 @@ public sealed class FactionComponent : Component
 		var faction = getFaction(factionName);
 		if (faction == null) return false;
 
-		foreach (var member in faction.Members.Values)
+		var membersList = faction.Members.Values.ToList();
+
+		foreach (var member in membersList)
 		{
-			if (member.IsValid())
+			var playerController = member?.Components?.Get<PlayerController>();
+			if (playerController != null)
 			{
-				var playerController = member.Components.Get<PlayerController>();
-				playerController?.ClearFaction();
-				
+				playerController.ClearFaction();
 				Log.Info($"{member.Name} removed from disbanded faction {factionName}");
 			}
 		}
 
+		faction.Members.Clear();
+		faction.Leader = null;
+
 		FactionTable.Remove(factionName);
 		Log.Info($"Faction {factionName} has been disbanded");
+
 		return true;
 	}
 

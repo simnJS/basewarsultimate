@@ -1,0 +1,120 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits Panel
+@namespace Sandbox
+
+<root>
+    @if(Faction != null)
+    {
+        <div class="faction-item">
+            <div class="faction-top">
+                <div class="left-side">
+                    @if(!string.IsNullOrEmpty(Faction.Password))
+                    {
+                        <span class="faction-status closed">Closed 🔒</span>
+                    }
+                    else
+                    {
+                        <span class="faction-status open">Open</span>
+                    }
+                </div>
+                <div class="faction-name" style="color: @Faction.Color">@Faction.Name</div>
+                <div class="right-side"></div>
+            </div>
+            @{
+                var currentPlayer = Scene.GetAllComponents<PlayerController>().FirstOrDefault()?.GameObject;
+                var isInThisFaction = currentPlayer != null && FactionComponent.IsPlayerInFaction(currentPlayer, Faction.Name);
+                var isInAnyFaction = currentPlayer != null && FactionComponent.IsPlayerInFaction(currentPlayer);
+                var isLeader = isInThisFaction && Faction.Leader?.Name == currentPlayer?.Name;
+            }
+            <div class="faction-actions">
+                @if(!isInThisFaction && !isInAnyFaction)
+                {
+                    <button class="join-btn" onclick="@(() => JoinFaction())">
+                        Join Faction
+                    </button>
+                }
+                else if(isInThisFaction)
+                {
+                    @if(isLeader)
+                    {
+                        <button class="disband-btn" onclick="@(() => DisbandFaction())">
+                            Disband Faction
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="leave-btn" onclick="@(() => LeaveFaction())">
+                            Leave Faction
+                        </button>
+                    }
+                }
+            </div>
+        </div>
+    }
+</root>
+
+@code
+{
+    [Property] public Faction Faction { get; set; }
+    [Property] public FactionComponent FactionComponent { get; set; }
+    
+    protected override int BuildHash() => System.HashCode.Combine(
+        Faction?.Name,
+        Faction?.Members?.Count ?? 0,
+        Faction?.Leader?.Name
+    );
+
+    private void JoinFaction()
+    {
+        var currentPlayer = Scene.GetAllComponents<PlayerController>().FirstOrDefault()?.GameObject;
+        if (currentPlayer != null && FactionComponent != null && Faction != null)
+        {
+            // Pour l'instant, on rejoint sans mot de passe
+            // TODO: Ajouter une UI pour saisir le mot de passe si nécessaire
+            var success = FactionComponent.JoinFaction(currentPlayer, Faction.Name, "");
+            if (success)
+            {
+                Log.Info($"Successfully joined faction: {Faction.Name}");
+            }
+            else
+            {
+                Log.Info($"Failed to join faction: {Faction.Name}");
+            }
+        }
+    }
+
+    private void LeaveFaction()
+    {
+        var currentPlayer = Scene.GetAllComponents<PlayerController>().FirstOrDefault()?.GameObject;
+        if (currentPlayer != null && FactionComponent != null)
+        {
+            var success = FactionComponent.LeaveFaction(currentPlayer);
+            if (success)
+            {
+                Log.Info("Successfully left faction");
+            }
+            else
+            {
+                Log.Info("Failed to leave faction");
+            }
+        }
+    }
+
+    private void DisbandFaction()
+    {
+        var currentPlayer = Scene.GetAllComponents<PlayerController>().FirstOrDefault()?.GameObject;
+        if (currentPlayer != null && FactionComponent != null && Faction != null)
+        {
+            var success = FactionComponent.DisbandFaction(Faction.Name);
+            if (success)
+            {
+                Log.Info($"Successfully disbanded faction: {Faction.Name}");
+            }
+            else
+            {
+                Log.Info($"Failed to disband faction: {Faction.Name}");
+            }
+        }
+    }
+} 

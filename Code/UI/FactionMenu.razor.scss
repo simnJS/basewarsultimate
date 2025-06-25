@@ -1,0 +1,209 @@
+FactionMenu
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	pointer-events: none;
+
+	.faction-menu
+	{
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 0, 0, 0.7);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		pointer-events: all;
+	}
+
+	.menu-container
+	{
+		width: 780px;
+		height: 520px;
+		background-color: #2c2c2c;
+		border-radius: 12px;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		border: 2px solid #555;
+		padding: 25px 15px;
+		gap: 20px;
+		overflow-y: scroll;
+	}
+
+	.title
+	{
+		font-size: 24px;
+		font-family: Poppins, sans-serif;
+		color: #ffffff;
+		font-weight: bold;
+		text-align: center;
+		margin: 0;
+		flex-shrink: 0;
+	}
+
+	.menu-content
+	{
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+		align-items: center;
+		width: 100%;
+		flex: 1;
+	}
+
+
+
+	.create-faction-btn
+	{
+		background-color: #4285f4;
+		color: #ffffff;
+		border: none;
+		border-radius: 8px;
+		padding: 12px 20px;
+		font-size: 15px;
+		font-family: Poppins, sans-serif;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
+		width: 100%;
+		text-align: center;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		&:hover:not(.disabled)
+		{
+			background-color: #3367d6;
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4);
+		}
+
+		&:active:not(.disabled)
+		{
+			transform: translateY(0);
+			box-shadow: 0 2px 10px rgba(66, 133, 244, 0.3);
+		}
+
+		&.disabled
+		{
+			background-color: #666;
+			cursor: not-allowed;
+			opacity: 0.7;
+			box-shadow: none;
+			transform: none;
+
+			&:hover
+			{
+				background-color: #666;
+				transform: none;
+				box-shadow: none;
+			}
+		}
+	}
+
+	.create-form
+	{
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		width: 100%;
+		max-width: 450px;
+	}
+
+	.form-group
+	{
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+
+		label
+		{
+			font-family: Poppins, sans-serif;
+			font-size: 13px;
+			font-weight: 600;
+			color: #ffffff;
+		}
+
+		.input
+		{
+			padding: 10px 14px;
+			border: 2px solid #555;
+			border-radius: 6px;
+			background-color: #1a1a1a;
+			color: #ffffff;
+			font-family: Poppins, sans-serif;
+			font-size: 13px;
+			pointer-events: auto;
+
+			&:focus
+			{
+				border-color: #4285f4;
+			}
+		}
+
+		// Style spécial pour le ColorSlider
+		&.color-group
+		{
+			gap: 12px;
+			
+			ColorSlider
+			{
+				align-self: flex-start;
+			}
+		}
+	}
+
+	.form-buttons
+	{
+		display: flex;
+		gap: 12px;
+		margin-top: 10px;
+		flex-shrink: 0;
+
+		button
+		{
+			flex: 1;
+			padding: 12px 18px;
+			border: none;
+			border-radius: 6px;
+			font-family: Poppins, sans-serif;
+			font-size: 14px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.cancel-btn
+		{
+			background-color: #666;
+			color: #ffffff;
+
+			&:hover
+			{
+				background-color: #777;
+			}
+		}
+
+		.create-btn
+		{
+			background-color: #4285f4;
+			color: #ffffff;
+
+			&:hover
+			{
+				background-color: #3367d6;
+			}
+		}
+	}
+}

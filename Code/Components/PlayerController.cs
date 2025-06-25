@@ -48,6 +48,11 @@ public sealed class PlayerController : Component
 
 	public void ClearFaction()
 	{
-		CurrentFaction = null;
+		if (CurrentFaction != null)
+		{
+			var oldFactionName = CurrentFaction.Name;
+			CurrentFaction = null;
+			Log.Info($"Player {GameObject.Name} faction cleared (was: {oldFactionName})");
+		}
 	}
 }

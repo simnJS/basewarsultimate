@@ -21,9 +21,6 @@ public sealed class DataManager : Component
 
 	protected override void OnStart()
 	{
-		// Initialize or load data here
-		Log.Info("DataManager has started.");
-		
 		LoadPlayerData();
 		
 		if (currentPlayerData == null)
@@ -43,16 +40,13 @@ public sealed class DataManager : Component
 			{
 				var jsonString = FileSystem.Data.ReadAllText(SAVE_FILE_NAME);
 				currentPlayerData = JsonSerializer.Deserialize<PlayerData>(jsonString);
-				Log.Info($"Player data loaded successfully. Level: {currentPlayerData.Level}, Money: {currentPlayerData.Money}");
 			}
 			else
 			{
-				Log.Info("No save file found, will create new player data.");
 			}
 		}
-		catch (System.Exception ex)
+		catch (System.Exception)
 		{
-			Log.Error($"Failed to load player data: {ex.Message}");
 			currentPlayerData = null;
 		}
 	}
@@ -71,13 +65,11 @@ public sealed class DataManager : Component
 					WriteIndented = true 
 				});
 				
-				FileSystem.Data.WriteAllText(SAVE_FILE_NAME, jsonString);
-				Log.Info("Player data saved successfully.");
+				FileSystem.Data.WriteAllText(SAVE_FILE_NAME, jsonString);	
 			}
 		}
-		catch (System.Exception ex)
+		catch (System.Exception)
 		{
-			Log.Error($"Failed to save player data: {ex.Message}");
 		}
 	}
 	
@@ -94,7 +86,6 @@ public sealed class DataManager : Component
 			LastPlayTime = System.DateTime.Now
 		};
 		
-		Log.Info($"New player data created. Money: {currentPlayerData.Money}, Level: {currentPlayerData.Level}");
 		SavePlayerData(); // Auto-save new data
 	}
 	
@@ -106,7 +97,6 @@ public sealed class DataManager : Component
 		if (currentPlayerData != null && amount > 0)
 		{
 			currentPlayerData.Money += amount;
-			Log.Info($"Added {amount} money. Total: {currentPlayerData.Money}");
 		}
 	}
 	
@@ -118,7 +108,6 @@ public sealed class DataManager : Component
 		if (currentPlayerData != null && amount > 0 && currentPlayerData.Money >= amount)
 		{
 			currentPlayerData.Money -= amount;
-			Log.Info($"Spent {amount} money. Remaining: {currentPlayerData.Money}");
 			return true;
 		}
 		return false;
@@ -144,12 +133,6 @@ public sealed class DataManager : Component
 			currentPlayerData.Level = newLevel;
 			currentPlayerData.ExperiencePoints = finalXP;
 			
-			Log.Info($"Added {exp} experience. Total: {currentPlayerData.ExperiencePoints}");
-			
-			if (leveledUp)
-			{
-				Log.Info($"🎉 Level up! New level: {currentPlayerData.Level}");
-			}
 		}
 	}
 	
@@ -161,7 +144,6 @@ public sealed class DataManager : Component
 		if (currentPlayerData != null)
 		{
 			currentPlayerData.Level = PlayerLevelSystem.SetLevel(level);
-			Log.Info($"Level set to: {currentPlayerData.Level}");
 		}
 	}
 	
@@ -185,7 +167,6 @@ public sealed class DataManager : Component
 			
 			if (leveledUp)
 			{
-				Log.Info($"🎉 Level up after XP adjustment! New level: {currentPlayerData.Level}");
 			}
 		}
 	}
@@ -225,7 +206,6 @@ public sealed class DataManager : Component
 		if (currentPlayerData != null && amount > 0)
 		{
 			currentPlayerData.Rebirth += amount;
-			Log.Info($"Rebirth added! Total rebirths: {currentPlayerData.Rebirth}");
 		}
 	}
 	
@@ -234,7 +214,6 @@ public sealed class DataManager : Component
 		if (currentPlayerData != null)
 		{
 			currentPlayerData.Rebirth = 0;
-			Log.Info("Rebirth count has been reset.");
 		}
 	}
 	
@@ -250,7 +229,6 @@ public sealed class DataManager : Component
 			currentPlayerData.ExperiencePoints = 0;
 			currentPlayerData.Rebirth = currentRebirths + 1;
 			
-			Log.Info($"🔄 Rebirth completed! Now at rebirth {currentPlayerData.Rebirth}");
 		}
 	}
 	
@@ -271,7 +249,6 @@ public sealed class DataManager : Component
 	public void ResetPlayerData()
 	{
 		CreateNewPlayerData();
-		Log.Info("Player data has been reset.");
 	}
 	
 	protected override void OnDestroy()

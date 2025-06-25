@@ -1,0 +1,135 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System;
+@inherits Panel
+@namespace Sandbox
+
+<root>
+    <div class="color-preview-section">
+        <div class="color-preview" style="background-color: @CurrentColorHex;"></div>
+        <div class="color-info">
+            <div class="rgb-display">RGB(@Red, @Green, @Blue)</div>
+            <TextEntry class="hex-input" Value:bind="@HexInput" Placeholder="#FFFFFF" />
+        </div>
+    </div>
+    <div class="color-sliders">
+        <div class="slider-group red-slider">
+            <label class="slider-label red">R: @Red</label>
+            <SliderControl class="color-slider red-gradient" Value:bind="@Red" Min=@(0) Max=@(255) Step=@(1) />
+        </div>
+        <div class="slider-group green-slider">
+            <label class="slider-label green">G: @Green</label>
+            <SliderControl class="color-slider green-gradient" Value:bind="@Green" Min=@(0) Max=@(255) Step=@(1) />
+        </div>
+        <div class="slider-group blue-slider">
+            <label class="slider-label blue">B: @Blue</label>
+            <SliderControl class="color-slider blue-gradient" Value:bind="@Blue" Min=@(0) Max=@(255) Step=@(1) />
+        </div>
+    </div>
+</root>
+
+@code
+{
+	public Action<string> OnColorChanged { get; set; }
+
+	private int _red = 66;
+	public int Red
+	{
+		get => _red;
+		set
+		{
+			if ( _red == value ) return;
+			_red = value;
+			UpdateColor();
+		}
+	}
+
+	private int _green = 133;
+	public int Green
+	{
+		get => _green;
+		set
+		{
+			if ( _green == value ) return;
+			_green = value;
+			UpdateColor();
+		}
+	}
+
+	private int _blue = 244;
+	public int Blue
+	{
+		get => _blue;
+		set
+		{
+			if ( _blue == value ) return;
+			_blue = value;
+			UpdateColor();
+		}
+	}
+
+	private string _hexInput = "#4285f4";
+	public string HexInput
+	{
+		get => _hexInput;
+		set
+		{
+			if ( _hexInput == value ) return;
+			_hexInput = value;
+			
+			// Try to parse the hex input and update RGB values
+			if ( TryParseHexColor( value, out var red, out var green, out var blue ) )
+			{
+				_red = red;
+				_green = green;
+				_blue = blue;
+				UpdateColor();
+			}
+		}
+	}
+
+	public string CurrentColorHex { get; private set; } = "#4285f4";
+
+	protected override void OnAfterTreeRender(bool firstTime)
+	{
+		base.OnAfterTreeRender(firstTime);
+		UpdateColor();
+	}
+
+	private void UpdateColor()
+	{
+		CurrentColorHex = $"#{Red:X2}{Green:X2}{Blue:X2}";
+		_hexInput = CurrentColorHex;
+		OnColorChanged?.Invoke(CurrentColorHex);
+		StateHasChanged();
+		Log.Info($"Couleur mise à jour: {CurrentColorHex} (R:{Red} G:{Green} B:{Blue})");
+	}
+
+	private bool TryParseHexColor(string hex, out int red, out int green, out int blue)
+	{
+		red = green = blue = 0;
+		
+		if ( string.IsNullOrEmpty( hex ) )
+			return false;
+			
+		// Remove # if present
+		if ( hex.StartsWith( "#" ) )
+			hex = hex.Substring( 1 );
+			
+		// Check if valid hex length
+		if ( hex.Length != 6 )
+			return false;
+			
+		try
+		{
+			red = Convert.ToInt32( hex.Substring( 0, 2 ), 16 );
+			green = Convert.ToInt32( hex.Substring( 2, 2 ), 16 );
+			blue = Convert.ToInt32( hex.Substring( 4, 2 ), 16 );
+			return true;
+		}
+		catch
+		{
+			return false;
+		}
+	}
+} 

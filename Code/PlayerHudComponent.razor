@@ -118,13 +118,6 @@
 
 				dataManager.AddExperience(100000000);
 				
-				// Display level achievements
-				if (HasLevel(50) && GetLevel() % 50 == 0)
-				{
-					Log.Info($"🏆 Milestone reached! Level {GetLevel()}");
-				}
-				
-				// Save data periodically
 				dataManager.SavePlayerData();
 			}
 

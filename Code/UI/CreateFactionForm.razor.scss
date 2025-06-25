@@ -1,0 +1,104 @@
+.create-form
+{
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	width: 100%;
+	max-width: 450px;
+}
+
+.form-group
+{
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+
+	label
+	{
+		font-family: Poppins, sans-serif;
+		font-size: 13px;
+		font-weight: 600;
+		color: #ffffff;
+	}
+
+	.input
+	{
+		padding: 10px 14px;
+		border: 2px solid #555;
+		border-radius: 6px;
+		background-color: #1a1a1a;
+		color: #ffffff;
+		font-family: Poppins, sans-serif;
+		font-size: 13px;
+		pointer-events: auto;
+
+		&:focus
+		{
+			border-color: #4285f4;
+			outline: none;
+		}
+	}
+
+	input[type="color"]
+	{
+		height: 50px;
+		border: 2px solid #555;
+	}
+
+	// Style spécial pour le ColorSlider
+	&.color-group
+	{
+		gap: 12px;
+		
+		ColorSlider
+		{
+			align-self: flex-start;
+		}
+	}
+}
+
+.form-buttons
+{
+	display: flex;
+	gap: 12px;
+	margin-top: 10px;
+	flex-shrink: 0;
+
+	button
+	{
+		flex: 1;
+		padding: 12px 18px;
+		border: none;
+		border-radius: 6px;
+		font-family: Poppins, sans-serif;
+		font-size: 14px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.cancel-btn
+	{
+		background-color: #666;
+		color: #ffffff;
+
+		&:hover
+		{
+			background-color: #777;
+		}
+	}
+
+	.create-btn
+	{
+		background-color: #4285f4;
+		color: #ffffff;
+
+		&:hover
+		{
+			background-color: #3367d6;
+		}
+	}
+} 
