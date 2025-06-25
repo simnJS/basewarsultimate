@@ -6,7 +6,7 @@
 <root>
 	@{
 		Log.Info($"Rendering: IsOpen={IsOpen}, ShowingCreateForm={ShowingCreateForm}");
-		var currentPlayer = Scene.GetAllComponents<PlayerController>().FirstOrDefault()?.GameObject;
+		var currentPlayer = Scene.GetAllComponents<PlayerComponent>().FirstOrDefault()?.GameObject;
 		var isInFaction = currentPlayer != null && factionComponent?.IsPlayerInFaction(currentPlayer) == true;
 	}
 	@if(IsOpen)

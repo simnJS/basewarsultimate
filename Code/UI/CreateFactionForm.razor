@@ -48,7 +48,7 @@
 			return;
 		}
 
-		var player = Scene.GetAll<PlayerController>().FirstOrDefault( p => !p.IsProxy ).GameObject;
+		var player = Scene.GetAll<PlayerComponent>().FirstOrDefault( p => !p.IsProxy ).GameObject;
 		if ( player == null )
 		{
 			Log.Info( "Local player not found!" );

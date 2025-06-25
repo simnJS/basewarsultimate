@@ -22,7 +22,7 @@
                 <div class="right-side"></div>
             </div>
             @{
-                var currentPlayer = Scene.GetAllComponents<PlayerController>().FirstOrDefault()?.GameObject;
+                var currentPlayer = Scene.GetAllComponents<PlayerComponent>().FirstOrDefault()?.GameObject;
                 var isInThisFaction = currentPlayer != null && FactionComponent.IsPlayerInFaction(currentPlayer, Faction.Name);
                 var isInAnyFaction = currentPlayer != null && FactionComponent.IsPlayerInFaction(currentPlayer);
                 var isLeader = isInThisFaction && Faction.Leader?.Name == currentPlayer?.Name;
@@ -67,7 +67,7 @@
 
     private void JoinFaction()
     {
-        var currentPlayer = Scene.GetAllComponents<PlayerController>().FirstOrDefault()?.GameObject;
+        var currentPlayer = Scene.GetAllComponents<PlayerComponent>().FirstOrDefault()?.GameObject;
         if (currentPlayer != null && FactionComponent != null && Faction != null)
         {
             // Pour l'instant, on rejoint sans mot de passe
@@ -86,7 +86,7 @@
 
     private void LeaveFaction()
     {
-        var currentPlayer = Scene.GetAllComponents<PlayerController>().FirstOrDefault()?.GameObject;
+        var currentPlayer = Scene.GetAllComponents<PlayerComponent>().FirstOrDefault()?.GameObject;
         if (currentPlayer != null && FactionComponent != null)
         {
             var success = FactionComponent.LeaveFaction(currentPlayer);
@@ -103,7 +103,7 @@
 
     private void DisbandFaction()
     {
-        var currentPlayer = Scene.GetAllComponents<PlayerController>().FirstOrDefault()?.GameObject;
+        var currentPlayer = Scene.GetAllComponents<PlayerComponent>().FirstOrDefault()?.GameObject;
         if (currentPlayer != null && FactionComponent != null && Faction != null)
         {
             var success = FactionComponent.DisbandFaction(Faction.Name);

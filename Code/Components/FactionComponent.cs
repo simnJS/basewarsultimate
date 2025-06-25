@@ -11,7 +11,7 @@ public class Faction
 
 public sealed class FactionComponent : Component
 {
-	private Dictionary<string, Faction> FactionTable { get; set; } = new Dictionary<string, Faction>();
+	[Sync] public Dictionary<string, Faction> FactionTable { get; set; } = new Dictionary<string, Faction>();
 
 	protected override void OnUpdate()
 	{
@@ -35,8 +35,8 @@ public sealed class FactionComponent : Component
 		
 		FactionTable.Add(factionName, faction);
 
-		var playerController = player.Components.Get<PlayerController>();
-		playerController?.UpdateFaction(faction);
+		var playerComponent = player.Components.Get<PlayerComponent>();
+		playerComponent?.UpdateFaction(faction);
 
 		Log.Info($"Faction created: {factionName} by {player.Name}");
 		return faction;
@@ -70,8 +70,8 @@ public sealed class FactionComponent : Component
 
 		faction.Members[player.Name] = player;
 
-		var playerController = player.Components.Get<PlayerController>();
-		playerController?.UpdateFaction(faction);
+		var playerComponent = player.Components.Get<PlayerComponent>();
+		playerComponent?.UpdateFaction(faction);
 
 		Log.Info($"{player.Name} joined faction {factionName}");
 		return true;
@@ -96,8 +96,8 @@ public sealed class FactionComponent : Component
 
 		currentFaction.Members.Remove(player.Name);
 
-		var playerController = player.Components.Get<PlayerController>();
-		playerController?.ClearFaction();
+		var playerComponent = player.Components.Get<PlayerComponent>();
+		playerComponent?.ClearFaction();
 
 		if (currentFaction.Members.Count == 0)
 		{
@@ -117,10 +117,10 @@ public sealed class FactionComponent : Component
 
 		foreach (var member in membersList)
 		{
-			var playerController = member?.Components?.Get<PlayerController>();
-			if (playerController != null)
+			var playerComponent = member?.Components?.Get<PlayerComponent>();
+			if (playerComponent != null)
 			{
-				playerController.ClearFaction();
+				playerComponent.ClearFaction();
 				Log.Info($"{member.Name} removed from disbanded faction {factionName}");
 			}
 		}

@@ -1,24 +1,14 @@
 using System;
 using Sandbox.Citizen;
 
-public sealed class PlayerController : Component
+public sealed class PlayerComponent : Component
 {
-	[RequireComponent] CharacterController characterController { get; set; }
-
 	public Faction CurrentFaction { get; set; } = null; 
 
 
 	protected override void OnAwake()
 	{
 		base.OnAwake();
-	}
-
-	protected override void OnDestroy()
-	{
-		base.OnDestroy();
-		var composants = Scene.GetAllComponents<FactionComponent>();
-		var factionComponent = composants.FirstOrDefault();
-		factionComponent.CleanupPlayer(GameObject);
 	}
 
 	public bool IsInFaction()
@@ -51,7 +41,7 @@ public sealed class PlayerController : Component
 		if (CurrentFaction != null)
 		{
 			var oldFactionName = CurrentFaction.Name;
-			CurrentFaction = null;
+		CurrentFaction = null;
 			Log.Info($"Player {GameObject.Name} faction cleared (was: {oldFactionName})");
 		}
 	}
